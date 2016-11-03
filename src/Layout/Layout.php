@@ -11,8 +11,6 @@ namespace Itav\Component\Layout;
 
 interface Layout
 {
-    /**
-     * @return string
-     */
     public function show();
+    public function setParent(\DOMElement $parent);
 }

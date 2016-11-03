@@ -9,29 +9,31 @@
 namespace Itav\Component\Layout;
 
 
+use Itav\Component\Widget\Widget;
+
 abstract class AbstractLayout implements Layout
 {
-
+    /**
+     * @var \DOMElement
+     */
+    protected $ui;
+    /**
+     * @var \DOMElement
+     */
+    protected $parent;
     /**
      * @var Layout[]
      */
-    private $layouts;
+    protected $layouts = [];
     /**
      * @var Layout
      */
-    private $parentLayout;
+    protected $parentLayout;
     /**
-     * @var
+     * @var Widget[]
      */
-    private $widgets;
+    protected $widgets = [];
 
-    /**
-     * @return Layout[]
-     */
-    public function getLayouts()
-    {
-        return $this->layouts;
-    }
 
     /**
      * @param Layout[] $layouts
@@ -40,6 +42,20 @@ abstract class AbstractLayout implements Layout
     public function setLayouts($layouts)
     {
         $this->layouts = $layouts;
+        foreach ($layouts as $layout){
+            $layout->setParent($this->ui);
+        }
+        return $this;
+    }
+
+    /**
+     * @param Layout $layout
+     * @return self
+     */
+    public function addLayout($layout)
+    {
+        $this->layouts[] = $layout;
+        $layout->setParent($this->ui);
         return $this;
     }
 
@@ -70,18 +86,29 @@ abstract class AbstractLayout implements Layout
     }
 
     /**
-     * @param mixed $widgets
+     * @param Widget[] $widgets
      * @return self
      */
     public function setWidgets($widgets)
     {
         $this->widgets = $widgets;
+        foreach ($widgets as $widget){
+            $widget->setParent($this->ui);
+        }
         return $this;
     }
 
     /**
-     * @return string
+     * @param Widget $widget
+     * @return self
      */
+    public function addWidget($widget)
+    {
+        $this->widgets[] = $widget;
+        $widget->setParent($this->ui);
+        return $this;
+    }
+
     abstract public function show();
 
 }
